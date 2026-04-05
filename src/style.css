@@ -58,8 +58,9 @@ h1, h2, h3, h4, h5, h6 {
   top: 0;
   left: 0;
   width: 100px;
-  height: 100px;
-  background-color: rgba(255, 0, 0, 0.5);
+  height: 20px;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
 }
 
 #touch-controls {
@@ -77,6 +78,10 @@ h1, h2, h3, h4, h5, h6 {
   background-color: rgba(0, 0, 0, 0.5);
   border-radius: 50%;
   color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
 }
 #directional-btns {
   display: flex;
@@ -90,7 +95,7 @@ h1, h2, h3, h4, h5, h6 {
   position: relative;
   width: 100px;
   height: 100px;
-  background-color: rgba(0, 0, 0, 0.5);
+  /* background-color: rgba(0, 0, 0, 0.5); */
 }
 #directional-btns .directional-container {
   display: flex;

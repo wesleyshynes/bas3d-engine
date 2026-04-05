@@ -18,48 +18,60 @@ camera.position.x = 0
 // renderer.shadowMap.enabled = true
 document.body.appendChild(renderer.domElement)
 
-// create a plane
-// const planeGeometry = new THREE.PlaneGeometry(10, 10)
-// const planeMaterial = new THREE.MeshPhongMaterial({ color: 'rgba(0, 255, 0, 0.5)', side: THREE.DoubleSide })
-// // const planeMaterial = new THREE.MeshBasicMaterial({ color: 'rgba(0, 255, 0, 0.5)', side: THREE.DoubleSide })
-// const plane = new THREE.Mesh(planeGeometry, planeMaterial)
-// plane.rotation.x = Math.PI / 2
-// plane.position.y = 0
-// plane.receiveShadow = true
-// scene.add(plane)
-// const planesHelper = new THREE.GridHelper(10, 10)
-// scene.add(planesHelper)
-
 const planes = []
 const planeLights = []
 // simple grid of planes, for testing purposes alternate green and blue
-for (let i = 0; i < 12; i++) {
-  const x = (i % 4) * 10 - 5
-  const z = Math.floor(i / 4) * 10 - 5
-  const planeGeometry = new THREE.PlaneGeometry(10, 10)
-  const planeMaterial = new THREE.MeshPhongMaterial({ color: i % 2 === 0 ? 'rgb(0, 255, 0)' : 'rgb(0, 0, 255)', side: THREE.DoubleSide })
-  const plane = new THREE.Mesh(planeGeometry, planeMaterial)
-  plane.rotation.x = Math.PI / 2
-  plane.position.set(x, 0, z)
-  plane.receiveShadow = true
-  scene.add(plane)
-  planes.push(plane)
+for (let i = 0; i < 5; i++) {
+  for (let j = 0; j < 5; j++) {
+    const x = j * 10
+    const z = i * 10
+    const planeGeometry = new THREE.PlaneGeometry(10, 10)
+    const planeMaterial = new THREE.MeshPhongMaterial({ color: (i + j) % 2 === 0 ? 'rgb(0, 255, 0)' : 'rgb(0, 0, 255)', side: THREE.DoubleSide })
+    const plane = new THREE.Mesh(planeGeometry, planeMaterial)
+    plane.rotation.x = Math.PI / 2
+    plane.position.set(x, 0, z)
+    plane.receiveShadow = true
+    scene.add(plane)
+    planes.push(plane)
 
-  // add a light above each plane
-  const light = new THREE.PointLight(0xffffff, 1, 100)
-  // const light = new THREE.PointLight(0xffffff, 0.5, 100)
-  // directional light
-  // const light = new THREE.DirectionalLight(0xffffff, 0.5)
-  light.position.set(x + 2, 3, z + 2) // position the light above and to the side of the plane, so it casts interesting shadows
-  // point light downwards
-  light.castShadow = true
-  // light.target.position.set(x, 0, z)
-  const helper = new THREE.PointLightHelper(light)
-  // const helper = new THREE.DirectionalLightHelper(light)
-  scene.add(helper)
-  scene.add(light)
-  planeLights.push(light)
+    // add a light above each plane
+    // const light = new THREE.PointLight(0xffffff, 2, 100)
+    // light.position.set(x + 2, 10, z + 2) // position the light above and to the side of the plane, so it casts interesting shadows
+    // light.castShadow = true
+    // scene.add(light)
+    // planeLights.push(light)
+
+  }
 }
+
+const pointLight = new THREE.PointLight(0xffffff, 100, 100)
+pointLight.position.set(10, 20, 10)
+pointLight.castShadow = true
+// pointLight.shadow.mapSize.width = 1024
+// pointLight.shadow.mapSize.height = 1024
+// pointLight.shadow.camera.near = 0.5
+// pointLight.shadow.camera.far = 100
+scene.add(pointLight)
+
+// const ambientLight = new THREE.AmbientLight(0xffffff, 0.1)
+// ambientLight.castShadow = true
+// ambientLight.position.set(0, 10, 0)
+// scene.add(ambientLight)
+
+// const directionalLight = new THREE.DirectionalLight(0xffffff, 0.4)
+// directionalLight.position.set(10, 20, 10)
+// directionalLight.castShadow = true
+// directionalLight.shadow.mapSize.width = 1024
+// directionalLight.shadow.mapSize.height = 1024
+// directionalLight.shadow.camera.near = 0.5
+// directionalLight.shadow.camera.far = 50
+// directionalLight.shadow.camera.left = -20
+// directionalLight.shadow.camera.right = 20
+// directionalLight.shadow.camera.top = 20
+// directionalLight.shadow.camera.bottom = -20
+// scene.add(directionalLight)
+
+
 
 // create a cube
 const geometry = new THREE.BoxGeometry()
@@ -70,29 +82,6 @@ cube.position.x = 0
 cube.position.y = 1
 cube.position.z = 0
 scene.add(cube)
-
-// add lighting
-// const light = new THREE.PointLight(0xffffff, 1, 100)
-// light.position.set(0, 3, 0)
-// light.castShadow = true
-// // debug helper
-// const helper = new THREE.PointLightHelper(light)
-// scene.add(helper)
-// scene.add(light)
-
-// const lights = []
-// for (let i = 0; i < 4; i++) {
-//   const angle = (i / 4) * Math.PI * 2
-//   const x = Math.cos(angle) * 5
-//   const z = Math.sin(angle) * 5
-//   const light = new THREE.PointLight(0xffffff, 0.5, 100)
-//   light.position.set(x, 3, z)
-//   light.castShadow = true
-//   const helper = new THREE.PointLightHelper(light)
-//   scene.add(helper)
-//   scene.add(light)
-//   lights.push(light)
-// }
 
 camera.position.z = 5
 
@@ -130,6 +119,7 @@ let isJumping = false
 let ySpeed = 0
 
 const groundY = 0.5
+const rotationSpeed = 10
 
 let mouseDown = false
 window.addEventListener('mousedown', () => {
@@ -193,21 +183,26 @@ function handleInput(deltaTime: number) {
   // const movingBody = cube
 
   let moving = false
+  const moveDir = { x: 0, z: 0 }
 
   if (pressedKeys.has('w') || pressedKeys.has('W') || pressedKeys.has('ArrowUp')) {
     movingBody.position.z -= moveSpeed * deltaTime
+    moveDir.z -= 1
     moving = true
   }
   if (pressedKeys.has('s') || pressedKeys.has('S') || pressedKeys.has('ArrowDown')) {
     movingBody.position.z += moveSpeed * deltaTime
+    moveDir.z += 1
     moving = true
   }
   if (pressedKeys.has('a') || pressedKeys.has('A') || pressedKeys.has('ArrowLeft')) {
     movingBody.position.x -= moveSpeed * deltaTime
+    moveDir.x -= 1
     moving = true
   }
   if (pressedKeys.has('d') || pressedKeys.has('D') || pressedKeys.has('ArrowRight')) {
     movingBody.position.x += moveSpeed * deltaTime
+    moveDir.x += 1
     moving = true
   }
 
@@ -215,8 +210,19 @@ function handleInput(deltaTime: number) {
   if (joystickVector.x !== 0 || joystickVector.y !== 0) {
     moving = true
   }
+  moveDir.x += joystickVector.x
+  moveDir.z -= joystickVector.y
   movingBody.position.x += joystickVector.x * moveSpeed * deltaTime
   movingBody.position.z -= joystickVector.y * moveSpeed * deltaTime
+
+  // smooth rotation towards movement direction
+  if (moveDir.x !== 0 || moveDir.z !== 0) {
+    const targetAngle = Math.atan2(moveDir.x, moveDir.z)
+    let angleDiff = targetAngle - movingBody.rotation.y
+    // wrap to [-PI, PI]
+    angleDiff = ((angleDiff + Math.PI) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2) - Math.PI
+    movingBody.rotation.y += angleDiff * Math.min(rotationSpeed * deltaTime, 1)
+  }
 
   // jumping
   if ((pressedKeys.has(' ') || pressedKeys.has('Space')) && movingBody.position.y <= groundY) {
@@ -246,8 +252,18 @@ function handleInput(deltaTime: number) {
     ySpeed = 0
   }
 
+  const isAirborne = movingBody.position.y > groundY + 0.01
+
   if (mixer) {
-    const nextClip = moving ? robotAnimations[6] : robotAnimations[2]
+    let nextClip: THREE.AnimationClip
+    if (isAirborne) {
+      nextClip = robotAnimations[3] // jump animation
+    } else if (moving) {
+      nextClip = robotAnimations[6] // running animation
+    } else {
+      nextClip = robotAnimations[2] // idle animation
+    }
+
     const nextAction = mixer.clipAction(nextClip)
     if (currentAction !== nextAction) {
       nextAction.reset()
@@ -256,6 +272,24 @@ function handleInput(deltaTime: number) {
         currentAction.crossFadeTo(nextAction, crossFadeDuration, false)
       }
       currentAction = nextAction
+    }
+
+    // Manually control jump animation time based on height
+    const jumpAction = mixer.clipAction(robotAnimations[3])
+    if (isAirborne) {
+      const jumpDuration = robotAnimations[3].duration
+      const heightNorm = Math.min(Math.max((movingBody.position.y - groundY) / (jumpHeight - groundY), 0), 1)
+
+      if (ySpeed > 0) {
+        // Going up: first half of animation
+        jumpAction.time = heightNorm * (jumpDuration / 2)
+      } else {
+        // Coming down: second half of animation
+        jumpAction.time = (1 - heightNorm) * (jumpDuration / 2) + (jumpDuration / 2)
+      }
+      jumpAction.timeScale = 0 // prevent mixer from auto-advancing
+    } else {
+      jumpAction.timeScale = 1
     }
   }
 }
@@ -316,6 +350,11 @@ async function startGame() {
       robotGltf = gltf.scene
       const model = gltf.scene
       model.position.set(2, 0, 0)
+      model.traverse((child) => {
+        if ((child as THREE.Mesh).isMesh) {
+          child.castShadow = true
+        }
+      })
       scene.add(model)
       mixer = new THREE.AnimationMixer(model)
       // idle is 2
