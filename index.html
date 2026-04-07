@@ -10,6 +10,19 @@
 
 <body>
   <div id="app"></div>
+
+  <!-- Start screen overlay -->
+  <div id="start-overlay">
+    <h1>bas3d-engine</h1>
+    <button id="play-btn">Play</button>
+  </div>
+
+  <!-- Pause overlay -->
+  <div id="pause-overlay" style="display:none">
+    <h2>Paused</h2>
+    <button id="resume-btn">Resume</button>
+  </div>
+
   <div id="touch-controls">
     <div id="directional-btns">
       <div id="joystick"></div>
@@ -17,7 +30,6 @@
 
     <div id="action-btns">
       <div id="jump-btn" class="touch-button">Jump</div>
-      <!-- <div id="crouch-btn" class="touch-button">Crouch</div> -->
     </div>
   </div>
   <script type="module" src="/src/main.ts"></script>
