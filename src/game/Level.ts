@@ -32,7 +32,7 @@ export class Level {
           emissive: 'rgb(255, 255, 255)',
           emissiveIntensity: 1,
           transparent: true,
-          opacity: 0.7,
+          opacity: 0.2,
         })
         const sphere = new THREE.Mesh(sphereGeo, sphereMat)
         sphere.position.set(x, 0, z)
@@ -42,7 +42,7 @@ export class Level {
     }
 
     // Point light with shadows
-    const pointLight = new THREE.PointLight(0xffffff, 10, 1000)
+    const pointLight = new THREE.PointLight(0xffffff, 80, 1000)
     pointLight.position.set(10, 20, 10)
     pointLight.castShadow = true
     scene.add(pointLight)

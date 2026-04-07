@@ -31,7 +31,7 @@ export class Player implements Updatable, PhysicsBody {
     const mat = new THREE.MeshPhongMaterial({ color: 'rgb(255, 0, 0)' })
     this.cube = new THREE.Mesh(geo, mat)
     this.cube.castShadow = true
-    this.cube.position.set(0, 1, 0)
+    this.cube.position.set(0, 0, 0)
     scene.add(this.cube)
     this.mesh = this.cube
   }
