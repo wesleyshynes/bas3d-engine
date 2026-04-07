@@ -20,21 +20,29 @@ export class Level {
 
         // add point light above each plane showing a glowing effect
         const light = new THREE.PointLight('rgb(255, 255, 255)', 0.5, 15)
-        light.position.set(x, 5, z)
+        light.position.set(x, 0, z)
         scene.add(light)
 
         // glowing sphere to visualize light position
         const sphereGeo = new THREE.SphereGeometry(0.3, 16, 16)
-        const sphereMat = new THREE.MeshBasicMaterial({ color: 'rgb(255, 255, 255)' })
+        // const sphereMat = new THREE.MeshBasicMaterial({ color: 'rgb(255, 255, 255)' })
+        // transparent material with emissive color for glow effect
+        const sphereMat = new THREE.MeshPhongMaterial({
+          color: 'rgb(255, 255, 255)',
+          emissive: 'rgb(255, 255, 255)',
+          emissiveIntensity: 1,
+          transparent: true,
+          opacity: 0.7,
+        })
         const sphere = new THREE.Mesh(sphereGeo, sphereMat)
-        sphere.position.set(x, 5, z)
+        sphere.position.set(x, 0, z)
         scene.add(sphere)
 
       }
     }
 
     // Point light with shadows
-    const pointLight = new THREE.PointLight(0xffffff, 10, 100)
+    const pointLight = new THREE.PointLight(0xffffff, 10, 1000)
     pointLight.position.set(10, 20, 10)
     pointLight.castShadow = true
     scene.add(pointLight)
